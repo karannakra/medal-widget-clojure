@@ -4,7 +4,7 @@
    [re-frame.core :as re-frame]
    [medals.events :as events]
    [medals.subs :as subs]
-   [medals.utils :refer [get-total-count]]))
+   [medals.utils :refer [get-countries-with-total sort-countries]]))
 
 
 (defn tableHeaders [color selected-sort]
@@ -21,22 +21,19 @@
                   [:span code]]]
                 (map (fn [key] ^{:key key} [:td (get country key)]) (filter (fn [key] (contains? ALLOWED_SORT_VALUES key)) (keys country)))])
 
-(defn get-countries-with-total [countries]
-  (map (fn [country] (assoc country :total (get-total-count country))) countries))
-
 
 (defn render-widget []
   (let [sort @(re-frame/subscribe [::subs/sort])
-        countries (get-countries-with-total @(re-frame/subscribe [::subs/countries]))]
+        countries (sort-countries (get-countries-with-total @(re-frame/subscribe [::subs/countries])) sort)]
     [:div {:class "medal-widget__wrapper"}
      [:table {:class "medal-widget__table"}
       [:thead
-       [:tr [:td "MEDAL COUNT"]]
+       [:tr [:td {:class "widget-title"} "MEDAL COUNT"]]
        [:tr
         [:th {:col-span "10"}]
         (map (fn [color] (tableHeaders color sort)) MEDAL_COLOR_CONSTANT)
-        [:th {:class (str (if (= sort (:total ALLOWED_SORT_VALUES)) " selected " "") " cursor-pointer")}
-         [:span {:on-click #(re-frame/dispatch [::events/change-selected-sort "total"])}  "TOTAL"]]]]
+        [:th {:class (str (if (= sort :total) " selected " "") " cursor-pointer")}
+         [:span {:on-click #(re-frame/dispatch [::events/change-selected-sort :total])}  "TOTAL"]]]]
       [:tbody
        (map country-medals countries)]]]))
 
