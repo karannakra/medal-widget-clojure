@@ -3,6 +3,7 @@
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
    [medals.events :as events]
+   [day8.re-frame.http-fx]
    [medals.views :as views]
    [medals.config :as config]))
 
@@ -19,6 +20,6 @@
 
 (defn init []
   (re-frame/dispatch-sync [::events/initialize-db])
-  (re-frame/dispatch [::events/fetch-countries])
+  (re-frame/dispatch [::events/fetch-countries-data])
   (dev-setup)
   (mount-root))
