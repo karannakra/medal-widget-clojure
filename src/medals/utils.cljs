@@ -3,11 +3,9 @@
             [medals.constants :refer [ALLOWED_SUMMATION_VALUES]]))
 
 (defn get-total-count [country]
-  (let [filtered-count (r/atom [])]
-    (doseq [item (keys country)]
-      (when (contains? ALLOWED_SUMMATION_VALUES item)
-        (reset! filtered-count (conj @filtered-count (get country item)))))
-    (reduce + @filtered-count)))
+  (reduce (fn [total summation-key]
+            (+ total (get country summation-key))) 
+           0 ALLOWED_SUMMATION_VALUES)
 
 (defn sort-countries [countries,sort-by]
   (sort (fn [countryA countryB] (cond
