@@ -22,9 +22,8 @@
  ::fetch-countries-success
  (fn [db [_ {:keys [data]}]]
    (println "inside")
-   (-> db
-       (assoc :loading false)
-       (assoc :countries data))))
+   (assoc db :loading false
+             :countries data)))
 (re-frame/reg-event-db
  ::bad-http-result
  (fn [db []]
